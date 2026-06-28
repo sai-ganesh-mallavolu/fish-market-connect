@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Farmers • Orders</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .orders-header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .orders-header .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: .9rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .orders-header a {
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .toolbar {
+            max-width: 1100px;
+            margin: 16px auto 0;
+            padding: 12px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 1fr auto auto;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .toolbar select,
+        .toolbar button {
+            padding: .55rem .7rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .toolbar .counts {
+            align-self: center;
+            color: var(--muted);
+            font-size: 14px;
+            justify-self: end;
+        }
+
+        #orders-list {
+            max-width: 1100px;
+            margin: 14px auto 30px;
+            padding: 0 10px;
+        }
+
+        .order-item {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            padding: 14px;
+            margin: 10px 0;
+        }
+
+        .order-item p {
+            margin: .35rem 0;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: .55rem .85rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-confirm {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-delete {
+            background: #e63946;
+            color: #fff;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            border: 1px solid var(--border);
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #7a5900;
+            border-color: #ffe69c;
+        }
+
+        .status.confirmed {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #a7f3d0;
+        }
+
+        .pill {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="orders-header">
+        <div class="wrap">
+            <div><strong>Farmers • Orders</strong></div>
+            <nav>
+                <a href="index.html">← Back to Products</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="toolbar">
+            <select id="status-filter" aria-label="Filter by status">
+                <option value="All" selected>All</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+            </select>
+
+            <button id="export-csv">Export CSV</button>
+            <div class="counts" id="counts">Total: 0 • Pending: 0 • Confirmed: 0</div>
+        </section>
+
+        <section id="orders-list"></section>
+    </main>
+
+    <script>
+        const PRODUCTS_KEY = 'products';
+        const ORDERS_KEY = 'orders';
+
+        function getProducts() { return JSON.parse(localStorage.getItem(PRODUCTS_KEY)) || []; }
+        function saveProducts(list) { localStorage.setItem(PRODUCTS_KEY, JSON.stringify(list)); }
+        function loadOrders() { return JSON.parse(localStorage.getItem(ORDERS_KEY)) || []; }
+        function saveOrders(list) { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); }
+
+        function fmtINR(n) { try { return '₹' + Number(n || 0).toLocaleString('en-IN'); } catch { return '₹' + (n || 0); } }
+        function fmtDateTime(iso) { if (!iso) return '-'; try { return new Date(iso).toLocaleString('en-IN', { hour12: true }); } catch { return iso; } }
+
+        function renderCounts(all) {
+            const total = all.length;
+            const pending = all.filter(o => (o.status || 'Pending') === 'Pending').length;
+            const confirmed = total - pending;
+            document.getElementById('counts').textContent = `Total: ${total} • Pending: ${pending} • Confirmed: ${confirmed}`;
+        }
+
+        function renderOrders() {
+            const filter = document.getElementById('status-filter').value;
+            const all = loadOrders();
+            const orders = filter === 'All' ? all : all.filter(o => (o.status || 'Pending') === filter);
+
+            renderCounts(all);
+
+            const list = document.getElementById('orders-list');
+            list.innerHTML = '';
+
+            if (orders.length === 0) {
+                list.innerHTML = '<p class="pill" style="padding:10px;">No orders found for this filter.</p>';
+                return;
+            }
+
+            orders.forEach((o, idx) => {
+                const index = all.indexOf(o);
+                const statusClass = (o.status || 'Pending').toLowerCase();
+                const totalValue = (o.pricePerKg || 0) * (o.quantity || 0);
+
+                const div = document.createElement('div');
+                div.className = 'order-item';
+                div.innerHTML = `
+          <p><strong>Fish:</strong> ${o.fish}</p>
+          <p><strong>Quantity:</strong> ${o.quantity} kg @ <strong>${fmtINR(o.pricePerKg)}/kg</strong> • <span class="pill">Total: ${fmtINR(totalValue)}</span></p>
+
+          <!-- Ordered On ABOVE Pickup Date -->
+          <p><strong>Ordered On:</strong> ${fmtDateTime(o.orderDate)}</p>
+          <p><strong>Pickup Date:</strong> ${o.pickupDate || '-'}</p>
+
+          <p><strong>Buyer:</strong> ${o.name} • <strong>Phone:</strong> ${o.phone}</p>
+          <p><strong>Location:</strong> ${o.location}</p>
+          <p><strong>Farmer:</strong> ${o.farmerName} • ${o.farmerLocation}</p>
+          <p><strong>Status:</strong> <span class="status ${statusClass}">${o.status || 'Pending'}</span></p>
+
+          <div class="actions">
+            <button class="btn btn-confirm" onclick="confirmOrder(${index})">Confirm</button>
+            <button class="btn btn-delete"  onclick="deleteOrder(${index})">Delete</button>
+          </div>
+        `;
+                list.appendChild(div);
+            });
+        }
+
+        function confirmOrder(index) {
+            const orders = loadOrders();
+            const order = orders[index];
+            if (!order) return;
+
+            if (order.status === 'Confirmed') {
+                alert('This order is already confirmed.');
+                return;
+            }
+
+            if (!confirm('Confirm this order and reduce stock?')) return;
+
+            const products = getProducts();
+            const pIdx = products.findIndex(p => p.id === order.productId);
+            if (pIdx === -1) {
+                alert('Product not found. Stock not updated.');
+            } else {
+                const newQty = Math.max(0, (products[pIdx].availableKg || 0) - (order.quantity || 0));
+                products[pIdx].availableKg = newQty;
+                saveProducts(products);
+            }
+
+            order.status = 'Confirmed';
+            saveOrders(orders);
+            renderOrders();
+        }
+
+        function deleteOrder(index) {
+            const orders = loadOrders();
+            if (!orders[index]) return;
+            if (!confirm('Delete this order?')) return;
+            orders.splice(index, 1);
+            saveOrders(orders);
+            renderOrders();
+        }
+
+        document.getElementById('status-filter').addEventListener('change', renderOrders);
+
+        document.getElementById('export-csv').addEventListener('click', () => {
+            const orders = loadOrders();
+            if (orders.length === 0) { alert('No orders to export.'); return; }
+
+            const headers = ['Fish', 'Quantity(kg)', 'PricePerKg', 'TotalValue', 'Buyer', 'Phone', 'Location', 'Status', 'OrderDateTime', 'PickupDate', 'ProductId'];
+            const rows = orders.map(o => {
+                const total = (o.pricePerKg || 0) * (o.quantity || 0);
+                const cols = [
+                    o.fish, o.quantity, o.pricePerKg, total, o.name, o.phone, o.location,
+                    o.status || 'Pending', fmtDateTime(o.orderDate), o.pickupDate || '', o.productId || ''
+                ];
+                return cols.map(val => {
+                    const s = (val === undefined || val === null) ? '' : String(val);
+                    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+                }).join(',');
+            });
+
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const now = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+            a.download = `orders-${now}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        (function initThemeFromSite() {
+            const siteTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', siteTheme);
+        })();
+
+        renderOrders();
+    </script>
+</body>
+
+</html>

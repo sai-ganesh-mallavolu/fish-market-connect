@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Direct Aqua Market</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- Header / Navbar -->
+    <header class="site-header">
+        <div class="nav-container">
+            <a class="brand" href="#">
+                <span class="logo-mark">🐟</span>
+                <span class="logo-text">Direct Aqua Market</span>
+            </a>
+
+            <nav class="nav-links" id="main-nav">
+                <a href="#products-area">Products</a>
+                <a href="#why">Why Us</a>
+                <a href="#contact">Contact</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+            </nav>
+
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1>Buy Directly from Aqua Farmers</h1>
+            <p>Bulk purchases, fresh stock, no middlemen — fair prices for all.</p>
+            <a href="#products-area" class="cta">Browse Products</a>
+        </div>
+    </section>
+
+    <!-- Search & Filters -->
+    <section id="filters" class="filters">
+        <div class="filters-inner">
+            <div class="filter-field">
+                <label for="search">Search</label>
+                <input type="text" id="search" placeholder="Fish name, farmer, location">
+            </div>
+
+            <div class="filter-field">
+                <label>Price (₹/kg)</label>
+                <div class="two-col">
+                    <input type="number" id="minPrice" placeholder="Min" min="0">
+                    <input type="number" id="maxPrice" placeholder="Max" min="0">
+                </div>
+            </div>
+
+            <div class="filter-field">
+                <label for="locationFilter">Location</label>
+                <select id="locationFilter">
+                    <option value="">All</option>
+                </select>
+            </div>
+
+            <div class="filter-checkbox">
+                <input type="checkbox" id="inStockOnly">
+                <label for="inStockOnly">In Stock Only</label>
+            </div>
+
+            <button id="clearFilters" class="btn-secondary">Clear</button>
+        </div>
+    </section>
+
+    <!-- Products (STATIC CARDS) -->
+    <section id="products-area" class="products-area">
+        <div id="loading" class="loading" aria-live="polite" style="display:none;">
+            <div class="spinner"></div><span>Loading…</span>
+        </div>
+
+        <div id="products" class="grid">
+            <!-- 1 -->
+            <div class="card product-card" data-id="shilavathi" data-name="Shilavathi" data-price="180"
+                data-available="250" data-farmer="Ramesh Kumar" data-location="Bhimavaram"
+                data-image="https://tse4.mm.bing.net/th/id/OIP.DwABVtGmywa0V-nvUDhj8wHaFj?pid=Api&P=0&h=180"
+                data-desc="Freshwater fish commonly farmed in AP; ideal for bulk catering and retail.">
+                <img src="https://tse4.mm.bing.net/th/id/OIP.DwABVtGmywa0V-nvUDhj8wHaFj?pid=Api&P=0&h=180"
+                    alt="Shilavathi" referrerpolicy="no-referrer" />
+                <div class="padded">
+                    <div class="badges">
+                        <span class="badge">Fresh Stock</span>
+                        <span class="badge">Available Today</span>
+                    </div>
+                    <h3>Shilavathi</h3>
+                    <div class="meta">Ramesh Kumar • Bhimavaram</div>
+                    <div class="price">₹180/kg</div>
+                    <div class="meta"><strong>Available:</strong> <span class="available-kg"
+                            id="available-shilavathi">250</span> kg</div>
+                    <button class="btn-primary" onclick="openOrderFormById('shilavathi')">Place Order</button>
+                    <button class="btn-ghost" onclick="openProductDetailsById('shilavathi')">View Details</button>
+                </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="card product-card" data-id="gaddi-chepa" data-name="Gaddi Chepa" data-price="160"
+                data-available="180" data-farmer="Prasad" data-location="Palakollu"
+                data-image="https://images.unsplash.com/photo-1498654200943-1088dd4438ae?q=80&w=1200&auto=format&fit=crop"
+                data-desc="Popular table fish with firm flesh; great for grills and curries.">
+                <img src="https://images.unsplash.com/photo-1498654200943-1088dd4438ae?q=80&w=1200&auto=format&fit=crop"
+                    alt="Gaddi Chepa" referrerpolicy="no-referrer" />
+                <div class="padded">
+                    <div class="badges">
+                        <span class="badge">Fresh Stock</span>
+                        <span class="badge">Available Today</span>
+                    </div>
+                    <h3>Gaddi Chepa</h3>
+                    <div class="meta">Prasad • Palakollu</div>
+                    <div class="price">₹160/kg</div>
+                    <div class="meta"><strong>Available:</strong> <span class="available-kg"
+                            id="available-gaddi-chepa">180</span> kg</div>
+                    <button class="btn-primary" onclick="openOrderFormById('gaddi-chepa')">Place Order</button>
+                    <button class="btn-ghost" onclick="openProductDetailsById('gaddi-chepa')">View Details</button>
+                </div>
+            </div>
+
+            <!-- 3 -->
+            <div class="card product-card" data-id="rupu-chandu" data-name="Rupu Chandu" data-price="130"
+                data-available="220" data-farmer="Mahesh" data-location="Narsapur"
+                data-image="https://tse2.mm.bing.net/th/id/OIP.t7jViKQqPp92eQt4M9cpEAHaDg?pid=Api&P=0&h=180"
+                data-desc="Economical, versatile fish suitable for hotels & wholesale.">
+                <img src="https://tse2.mm.bing.net/th/id/OIP.t7jViKQqPp92eQt4M9cpEAHaDg?pid=Api&P=0&h=180"
+                    alt="Rupu Chandu" referrerpolicy="no-referrer" />
+                <div class="padded">
+                    <div class="badges">
+                        <span class="badge">Fresh Stock</span>
+                        <span class="badge">Available Today</span>
+                    </div>
+                    <h3>Rupu Chandu</h3>
+                    <div class="meta">Mahesh • Narsapur</div>
+                    <div class="price">₹130/kg</div>
+                    <div class="meta"><strong>Available:</strong> <span class="available-kg"
+                            id="available-rupu-chandu">220</span> kg</div>
+                    <button class="btn-primary" onclick="openOrderFormById('rupu-chandu')">Place Order</button>
+                    <button class="btn-ghost" onclick="openProductDetailsById('rupu-chandu')">View Details</button>
+                </div>
+            </div>
+
+            <!-- 4 -->
+            <div class="card product-card" data-id="pandugappa" data-name="Pandugappa" data-price="170"
+                data-available="210" data-farmer="Ravi Teja" data-location="Akividu"
+                data-image="https://media.andhrajyothy.com/media/2023/20230418/19kld1_f0ce6f8f86.jpg"
+                data-desc="High-demand festive season fish; robust texture and flavor.">
+                <img src="https://media.andhrajyothy.com/media/2023/20230418/19kld1_f0ce6f8f86.jpg" alt="Pandugappa"
+                    referrerpolicy="no-referrer" />
+                <div class="padded">
+                    <div class="badges">
+                        <span class="badge">Fresh Stock</span>
+                        <span class="badge">Available Today</span>
+                    </div>
+                    <h3>Pandugappa</h3>
+                    <div class="meta">Ravi Teja • Akividu</div>
+                    <div class="price">₹170/kg</div>
+                    <div class="meta"><strong>Available:</strong> <span class="available-kg"
+                            id="available-pandugappa">210</span> kg</div>
+                    <button class="btn-primary" onclick="openOrderFormById('pandugappa')">Place Order</button>
+                    <button class="btn-ghost" onclick="openProductDetailsById('pandugappa')">View Details</button>
+                </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="card product-card" data-id="koramenu" data-name="Koramenu" data-price="400" data-available="120"
+                data-farmer="Krishna" data-location="Undi"
+                data-image="https://tse3.mm.bing.net/th/id/OIP.TqlXJ9LfCvVxG0e-vXf2PgHaFj?pid=Api&P=0&h=180"
+                data-desc="Premium predator fish; prized for fillets and high-end menus.">
+                <img src="https://tse3.mm.bing.net/th/id/OIP.TqlXJ9LfCvVxG0e-vXf2PgHaFj?pid=Api&P=0&h=180"
+                    alt="Koramenu" referrerpolicy="no-referrer" />
+                <div class="padded">
+                    <div class="badges">
+                        <span class="badge">Fresh Stock</span>
+                        <span class="badge">Available Today</span>
+                    </div>
+                    <h3>Koramenu</h3>
+                    <div class="meta">Krishna • Undi</div>
+                    <div class="price">₹400/kg</div>
+                    <div class="meta"><strong>Available:</strong> <span class="available-kg"
+                            id="available-koramenu">120</span> kg</div>
+                    <button class="btn-primary" onclick="openOrderFormById('koramenu')">Place Order</button>
+                    <button class="btn-ghost" onclick="openProductDetailsById('koramenu')">View Details</button>
+                </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="card product-card" data-id="goraka" data-name="Goraka" data-price="110" data-available="260"
+                data-farmer="Balu" data-location="Mogalthur"
+                data-image="https://tse2.mm.bing.net/th/id/OIP.Kiyds3AjMY4mG5hCaWciSgHaEc?pid=Api&P=0&h=180"
+                data-desc="Budget-friendly bulk option; consistent supply for wholesalers.">
+                <img src="https://tse2.mm.bing.net/th/id/OIP.Kiyds3AjMY4mG5hCaWciSgHaEc?pid=Api&P=0&h=180" alt="Goraka"
+                    referrerpolicy="no-referrer" />
+                <div class="padded">
+                    <div class="badges">
+                        <span class="badge">Fresh Stock</span>
+                        <span class="badge">Available Today</span>
+                    </div>
+                    <h3>Goraka</h3>
+                    <div class="meta">Balu • Mogalthur</div>
+                    <div class="price">₹110/kg</div>
+                    <div class="meta"><strong>Available:</strong> <span class="available-kg"
+                            id="available-goraka">260</span> kg</div>
+                    <button class="btn-primary" onclick="openOrderFormById('goraka')">Place Order</button>
+                    <button class="btn-ghost" onclick="openProductDetailsById('goraka')">View Details</button>
+                </div>
+            </div>
+
+            <!-- 7 -->
+            <div class="card product-card" data-id="vanami-royyalu" data-name="Vanami Royyalu" data-price="320"
+                data-available="500" data-farmer="Satyanarayana" data-location="Penugonda"
+                data-image="https://tse1.mm.bing.net/th/id/OIP.-s2_fuxswBaN5BE7I4lKrAHaFj?pid=Api&P=0&h=180"
+                data-desc="Cultured whiteleg shrimp; export-grade quality for large buyers.">
+                <img src="https://tse1.mm.bing.net/th/id/OIP.-s2_fuxswBaN5BE7I4lKrAHaFj?pid=Api&P=0&h=180"
+                    alt="Vanami Royyalu" referrerpolicy="no-referrer" />
+                <div class="padded">
+                    <div class="badges">
+                        <span class="badge">Fresh Stock</span>
+                        <span class="badge">Available Today</span>
+                    </div>
+                    <h3>Vanami Royyalu</h3>
+                    <div class="meta">Satyanarayana • Penugonda</div>
+                    <div class="price">₹320/kg</div>
+                    <div class="meta"><strong>Available:</strong> <span class="available-kg"
+                            id="available-vanami-royyalu">500</span> kg</div>
+                    <button class="btn-primary" onclick="openOrderFormById('vanami-royyalu')">Place Order</button>
+                    <button class="btn-ghost" onclick="openProductDetailsById('vanami-royyalu')">View Details</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section id="why" class="why">
+        <h2>Why Choose Us</h2>
+        <div class="why-grid">
+            <div class="why-card">
+                <div class="why-icon">🤝</div>
+                <h3>Direct Trade</h3>
+                <p>No middlemen. Better income for farmers, better prices for buyers.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon">⏱️</div>
+                <h3>Real-time Stock</h3>
+                <p>Live availability and transparent pricing for quick decisions.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon">🧊</div>
+                <h3>Fresh & Reliable</h3>
+                <p>Bulk logistics and verified profiles ensure quality and trust.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon">🔒</div>
+                <h3>Secure Payments</h3>
+                <p>Digital invoices and direct credit to farmers for safe transactions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="site-footer">
+        <div class="footer-grid">
+            <div>
+                <h4>Direct Aqua Market</h4>
+                <p>Connecting aqua farmers and bulk buyers with transparent trade.</p>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#products-area">Products</a></li>
+                    <li><a href="#why">Why Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <ul>
+                    <li>support@directaquamarket.com</li>
+                    <li>+91 12345 67890</li>
+                    <li>Mon–Sat, 9am–6pm</li>
+                </ul>
+            </div>
+            <div>
+                <h4>Follow</h4>
+                <div class="socials">
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="X">𝕏</a>
+                    <a href="#" aria-label="LinkedIn">in</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © <span id="year"></span> Direct Aqua Market • <a href="#">Privacy</a> • <a href="#">Terms</a>
+        </div>
+    </footer>
+
+    <!-- Product Details Modal -->
+    <div id="details-modal" class="modal">
+        <div class="modal-content details-modal">
+            <span class="close" onclick="closeProductDetails()">&times;</span>
+            <div class="details-wrap">
+                <div class="details-image">
+                    <img id="details-image" alt="Product image" src="" referrerpolicy="no-referrer">
+                </div>
+                <div class="details-info">
+                    <h2 id="details-name">—</h2>
+                    <p class="meta" id="details-farmer">—</p>
+                    <p class="price" id="details-price">—</p>
+                    <p class="meta"><strong>Available:</strong> <span id="details-available">—</span> kg</p>
+                    <p id="details-desc" class="details-desc">—</p>
+                    <div class="details-actions">
+                        <button class="btn-primary" id="details-order-btn">Order Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderForm()">&times;</span>
+            <h2>Place Order</h2>
+            <form onsubmit="submitOrder(event)">
+                <input type="hidden" id="product-id">
+                <input type="hidden" id="fish-name">
+                <input type="hidden" id="price-per-kg">
+
+                <label>Fish:</label>
+                <p id="fish-display"></p>
+
+                <label for="quantity">Quantity (kg):</label>
+                <input type="number" id="quantity" min="1" step="1" required>
+
+                <label for="pickup-date">Pickup Date:</label>
+                <input type="date" id="pickup-date" required>
+                <p id="date-error-message" class="error-message" style="display:none;">Pickup Date must be today or
+                    later.</p>
+
+                <label for="buyer-name">Your Name:</label>
+                <input type="text" id="buyer-name" required>
+
+                <label for="buyer-phone">Phone Number:</label>
+                <input type="text" id="buyer-phone" maxlength="10" placeholder="10-digit mobile number" required>
+                <p id="phone-error-message" class="error-message" style="display:none;">Enter a valid 10-digit phone
+                    number.</p>
+
+                <label for="buyer-location">Location:</label>
+                <input type="text" id="buyer-location" required>
+
+                <input type="hidden" id="farmer-name">
+                <input type="hidden" id="farmer-location">
+                <input type="hidden" id="available-quantity">
+
+                <button type="submit">Confirm Order</button>
+                <p id="error-message" class="error-message" style="display:none;">Quantity exceeds available stock.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="confirmation-modal">
+        <div class="confirmation-modal-content">
+            <h2>✅ Order Confirmed!</h2>
+            <p><strong>Fish:</strong> <span id="confirmation-fish"></span></p>
+            <p><strong>Quantity:</strong> <span id="confirmation-quantity"></span> kg</p>
+            <p><strong>Pickup Date:</strong> <span id="confirmation-pickup-date"></span></p>
+            <p><strong>Your Name:</strong> <span id="confirmation-name"></span></p>
+            <p><strong>Phone:</strong> <span id="confirmation-phone"></span></p>
+            <p><strong>Location:</strong> <span id="confirmation-location"></span></p>
+            <p><strong>Farmer:</strong> <span id="confirmation-farmer"></span></p>
+            <p><strong>Farmer Location:</strong> <span id="confirmation-farmer-location"></span></p>
+            <button class="close-btn" onclick="closeConfirmation()">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
