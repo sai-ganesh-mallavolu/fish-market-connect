@@ -47,7 +47,9 @@ Fish Market Connect/
 
 1. Clone the repository:
 
-git clone `https://github.com/sai-ganesh-mallavolu/fish-market-connect`
+```bash
+git clone https://github.com/your-username/fish-market-connect.git
+```
 
 2. Open the project folder.
 
@@ -89,7 +91,4 @@ B.Tech Computer Science & Engineering Student
 
 **Email:** [mallavolusaiganesh@gmail.com](mailto:mallavolusaiganesh@gmail.com)
 
-Feel free to reach out if you have any questions, suggestions, or feedback regarding this project.
-
 ---
-
